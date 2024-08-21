@@ -12,5 +12,6 @@ namespace WorkIn.Service.Contract
         Task<PagedModel<Region>> GetAllRegions(RegionFilter filter, RegionSort sort);
         Task UpdateRegionAsync(Region region);
         Task DeleteRegionAsync(int regionId);
+        Task<PagedModel<Region>> GetAllRegionsNoFilter();
     }
 }

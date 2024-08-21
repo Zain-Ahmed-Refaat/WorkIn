@@ -46,13 +46,34 @@ namespace WorkIn.Controllers
             }
         }
 
+        [HttpGet("Get-All-Regions-No-Filter")]
+        public async Task<IActionResult> GetAllRegionsNoFilter()
+        {
+            try
+            {
+                var regionsPagedModel = await regionService.GetAllRegionsNoFilter();
+                var regionDtos = mapper.Map<PagedModel<RegionDto>>(regionsPagedModel);
+
+                return Ok(new Response(regionDtos, "Success", true, 200));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new Response(ex.Message, "An error occurred", false, 500)
+                {
+                    Errors = new { ExceptionMessage = ex.Message, ExceptionStackTrace = ex.StackTrace }
+                });
+            }
+        }
+
+
         [HttpGet("Get-All-Regions")]
         public async Task<Response> GetAllRegions([FromQuery] RegionFilter filter, [FromQuery] RegionSort sort)
         {
             try
             {
                 var regionsPagedModel = await regionService.GetAllRegions(filter, sort);
-                var regionDtos = mapper.Map<PagedModel<RegionDto>>(regionsPagedModel.Items);
+
+                var regionDtos = mapper.Map<PagedModel<RegionDto>>(regionsPagedModel);
 
                 return new Response(regionDtos, "Success", true, 200);
             }
@@ -68,6 +89,7 @@ namespace WorkIn.Controllers
                 };
             }
         }
+
 
         [HttpPost("Add-Region")]
         public async Task<Response> CreateAsync([FromBody] CreateRegionDto regionCreateDto)

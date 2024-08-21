@@ -41,6 +41,14 @@ namespace WorkIn.Service.Implementation
             return region;
         }
 
+        public async Task<PagedModel<Region>> GetAllRegionsNoFilter()
+        {
+            var query = context.Regions.AsQueryable();
+            var pagedModel = query.Paginate(1, 10); // Test with default pagination values
+            return pagedModel;
+        }
+
+
         public async Task<PagedModel<Region>> GetAllRegions(RegionFilter filter, RegionSort sort)
         {
             ValidateFilter(filter, sort);

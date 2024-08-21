@@ -12,8 +12,8 @@ using WorkIn.Persistence.Data;
 namespace WorkIn.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240821125121_WorkInDatabase")]
-    partial class WorkInDatabase
+    [Migration("20240821144726_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,44 @@ namespace WorkIn.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("WorkIn.Domain.Entities.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RegionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("Cities");
+                });
 
             modelBuilder.Entity("WorkIn.Domain.Entities.Country", b =>
                 {
@@ -43,11 +81,6 @@ namespace WorkIn.Persistence.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
                     b.Property<string>("EnName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -61,10 +94,6 @@ namespace WorkIn.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Countries");
-
-                    b.HasDiscriminator().HasValue("Country");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("WorkIn.Domain.Entities.Department", b =>
@@ -185,6 +214,44 @@ namespace WorkIn.Persistence.Migrations
                     b.ToTable("Profiles");
                 });
 
+            modelBuilder.Entity("WorkIn.Domain.Entities.Region", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EnName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("Regions");
+                });
+
             modelBuilder.Entity("WorkIn.Domain.Entities.WorkInfo", b =>
                 {
                     b.Property<int>("Id")
@@ -270,26 +337,13 @@ namespace WorkIn.Persistence.Migrations
 
             modelBuilder.Entity("WorkIn.Domain.Entities.City", b =>
                 {
-                    b.HasBaseType("WorkIn.Domain.Entities.Country");
+                    b.HasOne("WorkIn.Domain.Entities.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("RegionId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("RegionId");
-
-                    b.HasDiscriminator().HasValue("City");
-                });
-
-            modelBuilder.Entity("WorkIn.Domain.Entities.Region", b =>
-                {
-                    b.HasBaseType("WorkIn.Domain.Entities.Country");
-
-                    b.Property<int>("CountryId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("CountryId");
-
-                    b.HasDiscriminator().HasValue("Region");
+                    b.Navigation("Region");
                 });
 
             modelBuilder.Entity("WorkIn.Domain.Entities.Profile", b =>
@@ -311,6 +365,17 @@ namespace WorkIn.Persistence.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("Manager");
+                });
+
+            modelBuilder.Entity("WorkIn.Domain.Entities.Region", b =>
+                {
+                    b.HasOne("WorkIn.Domain.Entities.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("WorkIn.Domain.Entities.WorkInfo", b =>
@@ -370,28 +435,6 @@ namespace WorkIn.Persistence.Migrations
                     b.Navigation("Manager");
 
                     b.Navigation("Region");
-                });
-
-            modelBuilder.Entity("WorkIn.Domain.Entities.City", b =>
-                {
-                    b.HasOne("WorkIn.Domain.Entities.Region", "Region")
-                        .WithMany()
-                        .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Region");
-                });
-
-            modelBuilder.Entity("WorkIn.Domain.Entities.Region", b =>
-                {
-                    b.HasOne("WorkIn.Domain.Entities.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
                 });
 #pragma warning restore 612, 618
         }

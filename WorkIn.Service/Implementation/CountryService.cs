@@ -3,6 +3,7 @@ using System.Text.Json;
 using WorkIn.Domain.Common;
 using WorkIn.Domain.Entities;
 using WorkIn.Domain.Extensions;
+using WorkIn.Persistence.Data;
 using WorkIn.Persistence.MainRepository;
 using WorkIn.Service.Contract;
 
@@ -12,10 +13,12 @@ namespace WorkIn.Service.Implementation
     public class CountryService : ICountryService
     {
         private readonly IRepository<Country> countryRepository;
+        private readonly ApplicationDbContext context;
 
-        public CountryService(IRepository<Country> countryRepository)
+        public CountryService(IRepository<Country> countryRepository, ApplicationDbContext context)
         {
             this.countryRepository = countryRepository;
+            this.context = context;
         }
 
         public async Task<PagedModel<Country>> GetAll(int page, int limit, string search)
@@ -31,45 +34,17 @@ namespace WorkIn.Service.Implementation
 
         }
 
-        public async Task Upload(IFormFile file)
+        public async Task AddCountryAsync(Country country)
         {
-            var country = countryRepository.GetAll();
-            var countries = country.ToList();
-            List<Country> countriesFromFile;
+            if(country == null)
+                return;
 
-            using (var reader = new StreamReader(file.OpenReadStream()))
-            {
-                string json = await reader.ReadToEndAsync();
-                countriesFromFile = JsonSerializer.Deserialize<List<Country>>(json);
-            }
+            if(country.ArName == null)
 
-            if (countriesFromFile == null)
-            {
-                throw new Exception("Failed to deserialize the uploaded file.");
-            }
+            if(country.EnName == null)
 
-            var countriesFileIds = countriesFromFile.Select(x => x.Id).ToList();
-            var deletedCountries = countries.Where(c => !countriesFileIds.Contains(c.Id)).ToList();
-
-            foreach (var deletedCountry in deletedCountries)
-            {
-                deletedCountry.IsDeleted = true;
-            }
-
-            await countryRepository.UpdateAsync(deletedCountries, new string[] { "IsDeleted" });
-
-            foreach (var item in countriesFromFile)
-            {
-                var updatedCountry = countries.FirstOrDefault(c => c.Id == item.Id);
-                if (updatedCountry != null)
-                {
-                    updatedCountry.EnName = item.EnName;
-                    updatedCountry.ArName = item.ArName;
-                    await countryRepository.UpdateAsync(updatedCountry);
-                }
-
-            }
-
+            await countryRepository.InsertAsync(country);
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -19,7 +19,11 @@ namespace WorkIn.Infrastructure.Mapping.MapRegion
                 .ForMember(dest => dest.Id, src => src.MapFrom(src => src.Id))
                 .ReverseMap();
 
+            CreateMap<PagedModel<Region>, PagedModel<RegionDto>>()
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+
             CreateMap<PagedModel<RegionDto>, RegionDto>();
+
         }
     }
 }
