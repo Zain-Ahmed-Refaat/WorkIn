@@ -1,14 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace WorkIn.Domain.Entities
+﻿namespace WorkIn.Domain.Entities
 {
     public class Profile : EntityBase
     {
         public int? ManagerId { get; set; }
         public int? DepartmentId { get; set; }
-        public int? CountryId { get; set; }
+        public int? CityId { get; set; }
 
-        [Required]
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
@@ -16,7 +13,7 @@ namespace WorkIn.Domain.Entities
         
         public virtual Profile? Manager { get; set; }
         public virtual Department Department { get; set; }
-        public virtual Country Country { get; set; }
+        public virtual City City { get; set; }
 
     }
 }

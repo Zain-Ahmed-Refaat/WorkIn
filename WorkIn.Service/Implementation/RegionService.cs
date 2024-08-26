@@ -7,6 +7,7 @@ using WorkIn.Persistence.Data;
 using WorkIn.Persistence.MainRepository;
 using WorkIn.Service.Contract;
 using WorkIn.Domain.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace WorkIn.Service.Implementation
 {
@@ -24,6 +25,10 @@ namespace WorkIn.Service.Implementation
         public async Task AddRegionAsync(Region region)
         {
             region.ValidateRegion();
+
+            var existingRegion = await context.Regions.FirstOrDefaultAsync(c => c.EnName == region.EnName && c.ArName == region.ArName);
+            if (existingRegion != null)
+                throw new ArgumentException($"A Region with the name '{region.EnName}' already exists.");
 
             await regionRepository.InsertAsync(region);
             await context.SaveChangesAsync();

@@ -15,12 +15,12 @@ namespace WorkIn.Controllers
     {
         private readonly IRegionService regionService;
 
-        public RegionController(IRegionService regionService, IMapper mapper, IProfileService profileService) : base(mapper, profileService)
+        public RegionController(IRegionService regionService, IMapper mapper) : base(mapper)
         {
             this.regionService = regionService;
         }
 
-        [HttpGet("Get-Region/{id}")]
+        [HttpGet("Get-Region")]
         public async Task<Response> GetByIdAsync(int id)
         {
             try
@@ -112,7 +112,7 @@ namespace WorkIn.Controllers
             }
         }
 
-        [HttpPut("Update-Region/{id}")]
+        [HttpPut("Update-Region")]
         public async Task<Response> UpdateAsync(int id, [FromBody] UpdateRegionDto regionUpdateDto)
         {
             if (regionUpdateDto == null)
@@ -146,7 +146,7 @@ namespace WorkIn.Controllers
             }
         }
 
-        [HttpDelete("Delete-Region/{id}")]
+        [HttpDelete("Delete-Region")]
         public async Task<Response> DeleteAsync(int id)
         {
             try

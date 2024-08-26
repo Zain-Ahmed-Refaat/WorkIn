@@ -28,21 +28,9 @@ namespace WorkIn.Domain.Extensions
                 throw new ArgumentException("DepartmentId must be greater than zero",
                     nameof(workInfo.DepartmentId));
 
-            if (workInfo.CountryId <= 0)
-                throw new ArgumentException("CountryId must be greater than zero",
-                    nameof(workInfo.CountryId));
-
-            if (workInfo.RegionId <= 0)
-                throw new ArgumentException("RegionId must be greater than zero",
-                    nameof(workInfo.RegionId));
-
             if (workInfo.CityId <= 0)
                 throw new ArgumentException("CityId must be greater than zero",
                     nameof(workInfo.CityId));
-
-            if (string.IsNullOrWhiteSpace(workInfo.WorkEmail))
-                throw new ArgumentException("WorkEmail is required",
-                    nameof(workInfo.WorkEmail));
 
             if (workInfo.Salary <= 0)
                 throw new ArgumentException("Salary must be greater than zero",
@@ -73,21 +61,9 @@ namespace WorkIn.Domain.Extensions
                 throw new ArgumentException("DepartmentId must be greater than zero",
                     nameof(workInfo.DepartmentId));
 
-            if (workInfo.CountryId <= 0)
-                throw new ArgumentException("CountryId must be greater than zero",
-                    nameof(workInfo.CountryId));
-
-            if (workInfo.RegionId <= 0)
-                throw new ArgumentException("RegionId must be greater than zero",
-                    nameof(workInfo.RegionId));
-
             if (workInfo.CityId <= 0)
                 throw new ArgumentException("CityId must be greater than zero",
                     nameof(workInfo.CityId));
-
-            if (string.IsNullOrWhiteSpace(workInfo.WorkEmail))
-                throw new ArgumentException("WorkEmail is required",
-                    nameof(workInfo.WorkEmail));
 
             if (workInfo.Salary <= 0)
                 throw new ArgumentException("Salary must be greater than zero",
@@ -112,10 +88,10 @@ namespace WorkIn.Domain.Extensions
                 workInfos = workInfos.Where(w => w.DepartmentId == filter.DepartmentId.Value);
 
             if (filter.CountryId.HasValue)
-                workInfos = workInfos.Where(w => w.CountryId == filter.CountryId.Value);
+                workInfos = workInfos.Where(w => w.City.Region.CountryId == filter.CountryId.Value);
 
             if (filter.RegionId.HasValue)
-                workInfos = workInfos.Where(w => w.RegionId == filter.RegionId.Value);
+                workInfos = workInfos.Where(w => w.City.RegionId == filter.RegionId.Value);
 
             if (filter.CityId.HasValue)
                 workInfos = workInfos.Where(w => w.CityId == filter.CityId.Value);
@@ -125,21 +101,6 @@ namespace WorkIn.Domain.Extensions
 
             if (filter.SalaryMax.HasValue)
                 workInfos = workInfos.Where(w => w.Salary <= filter.SalaryMax.Value);
-
-            if (filter.LastPromotionDateStart.HasValue)
-                workInfos = workInfos.Where(w => w.LastPromotionDate >= filter.LastPromotionDateStart.Value);
-
-            if (filter.LastPromotionDateEnd.HasValue)
-                workInfos = workInfos.Where(w => w.LastPromotionDate <= filter.LastPromotionDateEnd.Value);
-
-            if (!string.IsNullOrWhiteSpace(filter.Skills))
-                workInfos = workInfos.Where(w => w.Skills.Contains(filter.Skills, StringComparison.OrdinalIgnoreCase));
-
-            if (!string.IsNullOrWhiteSpace(filter.WorkEmail))
-                workInfos = workInfos.Where(w => w.WorkEmail.Contains(filter.WorkEmail, StringComparison.OrdinalIgnoreCase));
-
-            if (!string.IsNullOrWhiteSpace(filter.PhoneNumber))
-                workInfos = workInfos.Where(w => w.PhoneNumber.Contains(filter.PhoneNumber));
 
             return workInfos;
         }
@@ -180,14 +141,14 @@ namespace WorkIn.Domain.Extensions
 
                 case WorkInfoSortEnum.CountryId:
                     orderedWorkInfos = sort.OrderDirection == SortEnum.OrderBy
-                        ? workInfos.OrderBy(w => w.CountryId)
-                        : workInfos.OrderByDescending(w => w.CountryId);
+                        ? workInfos.OrderBy(w => w.City.Region.CountryId)
+                        : workInfos.OrderByDescending(w => w.City.Region.CountryId);
                     break;
 
                 case WorkInfoSortEnum.RegionId:
                     orderedWorkInfos = sort.OrderDirection == SortEnum.OrderBy
-                        ? workInfos.OrderBy(w => w.RegionId)
-                        : workInfos.OrderByDescending(w => w.RegionId);
+                        ? workInfos.OrderBy(w => w.City.RegionId)
+                        : workInfos.OrderByDescending(w => w.City.RegionId);
                     break;
 
                 case WorkInfoSortEnum.CityId:
@@ -200,24 +161,6 @@ namespace WorkIn.Domain.Extensions
                     orderedWorkInfos = sort.OrderDirection == SortEnum.OrderBy
                         ? workInfos.OrderBy(w => w.Salary)
                         : workInfos.OrderByDescending(w => w.Salary);
-                    break;
-
-                case WorkInfoSortEnum.LastPromotionDate:
-                    orderedWorkInfos = sort.OrderDirection == SortEnum.OrderBy
-                        ? workInfos.OrderBy(w => w.LastPromotionDate)
-                        : workInfos.OrderByDescending(w => w.LastPromotionDate);
-                    break;
-
-                case WorkInfoSortEnum.WorkEmail:
-                    orderedWorkInfos = sort.OrderDirection == SortEnum.OrderBy
-                        ? workInfos.OrderBy(w => w.WorkEmail)
-                        : workInfos.OrderByDescending(w => w.WorkEmail);
-                    break;
-
-                case WorkInfoSortEnum.PhoneNumber:
-                    orderedWorkInfos = sort.OrderDirection == SortEnum.OrderBy
-                        ? workInfos.OrderBy(w => w.PhoneNumber)
-                        : workInfos.OrderByDescending(w => w.PhoneNumber);
                     break;
 
                 case WorkInfoSortEnum.CreationDate:
@@ -239,12 +182,16 @@ namespace WorkIn.Domain.Extensions
             if (string.IsNullOrEmpty(search))
                 return workInfos;
 
-            return workInfos.Where(w => w.WorkEmail.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                    || w.Skills.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                    || w.PhoneNumber.Contains(search)
-                                    || w.Salary.ToString().Contains(search)
-                                    || (w.LastPromotionDate.HasValue && w.LastPromotionDate.Value
-                                    .ToString("yyyy-MM-dd").Contains(search)));
+            return workInfos
+                .AsEnumerable()
+                .Where(w => 
+                       w.Salary.ToString().Contains(search)
+                    || w.CityId.ToString().Contains(search)
+                    || w.ManagerId.ToString().Contains(search)
+                    || w.EmployeeId.ToString().Contains(search)
+                    || w.JobTitleId.ToString().Contains(search)
+                    || w.DepartmentId.ToString().Contains(search))
+                .AsQueryable();
         }
     }
 }

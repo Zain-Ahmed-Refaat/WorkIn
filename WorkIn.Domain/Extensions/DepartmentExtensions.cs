@@ -89,11 +89,14 @@ namespace WorkIn.Domain.Extensions
             if (string.IsNullOrEmpty(search))
                 return departments;
 
-            return departments.Where(d => d.Name.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                        || d.ManagerId.ToString().Contains(search)
-                                        || (d.CreationDate.HasValue && d.CreationDate.Value
-                                        .ToString("yyyy-MM-dd").Contains(search)));
+            return departments
+                .AsEnumerable()
+                .Where(c => c.Name.Contains(search, StringComparison.OrdinalIgnoreCase)
+                         || c.ManagerId.ToString().Contains(search)
+                         || (c.CreationDate.HasValue && c.CreationDate.Value.ToString("yyyy-MM-dd").Contains(search)))
+                .AsQueryable();
         }
+
 
     }
 }

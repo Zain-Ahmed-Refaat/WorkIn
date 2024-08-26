@@ -15,12 +15,12 @@ namespace WorkIn.Controllers
     {
         private readonly IWorkInfoService workService;
 
-        public WorkInfoController(IWorkInfoService workService, IMapper mapper, IProfileService profileService) : base(mapper, profileService)
+        public WorkInfoController(IWorkInfoService workService, IMapper mapper) : base(mapper)
         {
             this.workService = workService;
         }
 
-        [HttpGet("Get-WorkInfo/{id}")]
+        [HttpGet("Get-WorkInfo")]
         public async Task<Response> GetWorkInfo(int id)
         {
             try
@@ -79,24 +79,12 @@ namespace WorkIn.Controllers
             if (createWorkInfoDto == null)
                 return new Response("Please Provide Data", 400);
 
-            try
-            {
+
                 var workInfo = mapper.Map<WorkInfo>(createWorkInfoDto);
                 await workService.AddWorkInfoAsync(workInfo);
-                var workInfoDto = mapper.Map<WorkInfoDto>(workInfo);
-                return new Response(workInfoDto, "City created successfully.", true, 200)
-                {
-                    Data = new { id = workInfoDto.Id }
-                };
-            }
-            catch (ArgumentException ex)
-            {
-                return new Response(ex.Message, 400);
-            }
-            catch (Exception ex)
-            {
-                return new Response("An unexpected error occurred: " + ex.Message, 500);
-            }
+
+                return new Response("WorkInfo created successfully.", 200);               ;
+
         }
 
         [HttpPut("Update-WorkInfo")]
@@ -130,7 +118,7 @@ namespace WorkIn.Controllers
             }
         }
 
-        [HttpDelete("Delete-WorkInfo/{id}")]
+        [HttpDelete("Delete-WorkInfo")]
         public async Task<Response> DeleteWorkInfo(int id)
         {
             try

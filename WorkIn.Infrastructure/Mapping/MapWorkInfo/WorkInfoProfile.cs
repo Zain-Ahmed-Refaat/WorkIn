@@ -9,8 +9,8 @@ namespace WorkIn.Infrastructure.Mapping.MapWorkInfo
         public WorkInfoProfile()
         {
             CreateMap<WorkInfo, WorkInfoDto>()
-                .ForMember(dest => dest.Id, src => src.MapFrom(src => src.Id))
-                .ReverseMap();
+               .ForMember(dest => dest.Id, src => src.MapFrom(src => src.Id))
+               .ReverseMap();
 
             CreateMap<CreateWorkInfoDto, WorkInfo>()
                 .ReverseMap();
@@ -18,6 +18,9 @@ namespace WorkIn.Infrastructure.Mapping.MapWorkInfo
             CreateMap<UpdateWorkInfoDto, WorkInfo>()
                 .ForMember(dest => dest.Id, src => src.MapFrom(src => src.Id))
                 .ReverseMap();
+
+            CreateMap<PagedModel<WorkInfo>, PagedModel<WorkInfoDto>>()
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
 
             CreateMap<PagedModel<WorkInfoDto>, WorkInfoDto>();
         }

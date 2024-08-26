@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Text.Json;
+﻿using Microsoft.EntityFrameworkCore;
 using WorkIn.Domain.Common;
 using WorkIn.Domain.Entities;
 using WorkIn.Domain.Extensions;
@@ -30,21 +29,23 @@ namespace WorkIn.Service.Implementation
 
         public async Task<Country> Get(int id)
         {
-            return await countryRepository.GetAsync(id);
+            if (id == 0) 
+                throw new ArgumentException(nameof(id), "Cannot Be Null");
 
+            return await countryRepository.GetAsync(id);
         }
 
         public async Task AddCountryAsync(Country country)
         {
-            if(country == null)
-                return;
+            country.ValidateCountry();
 
-            if(country.ArName == null)
-
-            if(country.EnName == null)
+            var existingCountry = await context.Countries.FirstOrDefaultAsync(c => c.EnName == country.EnName && c.ArName == country.ArName);
+            if (existingCountry != null)
+                throw new ArgumentException($"A country with the name '{country.EnName}' already exists.");
 
             await countryRepository.InsertAsync(country);
             await context.SaveChangesAsync();
         }
+
     }
 }

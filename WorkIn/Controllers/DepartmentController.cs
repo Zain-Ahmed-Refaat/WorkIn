@@ -15,7 +15,7 @@ namespace WorkIn.Controllers
     {
         private readonly IDepartmentService departmentService;
 
-        public DepartmentController(IDepartmentService departmentService, IMapper mapper, IProfileService profileService) : base(mapper, profileService)
+        public DepartmentController(IDepartmentService departmentService, IMapper mapper) : base(mapper)
         {
             this.departmentService = departmentService;
         }

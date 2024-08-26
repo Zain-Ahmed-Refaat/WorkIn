@@ -1,4 +1,6 @@
-﻿using WorkIn.Domain.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.Metrics;
+using WorkIn.Domain.Common;
 using WorkIn.Domain.Entities;
 using WorkIn.Domain.Extensions;
 using WorkIn.Domain.Filters.City;
@@ -24,6 +26,10 @@ namespace WorkIn.Service.Implementation
         public async Task AddCityAsync(City city)
         {
             city.ValidateCity();
+
+            var existingCity = await context.Cities.FirstOrDefaultAsync(c => c.EnName == city.EnName && c.ArName == city.ArName);
+            if (existingCity != null)
+                throw new ArgumentException($"A City with the name '{city.EnName}' already exists.");
 
             await cityRepository.InsertAsync(city);
             await context.SaveChangesAsync();

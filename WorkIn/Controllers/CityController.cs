@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WorkIn.Controllers;
 using WorkIn.Domain.Common;
@@ -11,14 +10,15 @@ using static WorkIn.Infrastructure.Dtos.City.CityDtos;
 
 namespace Taskedin.Controllers
 {
-    [Authorize]
+
+
     [Route("api/[controller]")]
     [ApiController]
     public class CityController : BaseController
     {
         private readonly ICityService _cityService;
 
-        public CityController(ICityService cityService, IMapper mapper, IProfileService profileService) : base(mapper, profileService)
+        public CityController(ICityService cityService, IMapper mapper) : base(mapper)
         {
             _cityService = cityService;
         }
@@ -76,11 +76,8 @@ namespace Taskedin.Controllers
             {
                 var city = mapper.Map<City>(createCityDto);
                 await _cityService.AddCityAsync(city);
-                var cityDto = mapper.Map<CityDto>(city);
-                return new Response(cityDto, "City created successfully.", true, 201)
-                {
-                    Data = new { id = city.Id }
-                };
+
+                return new Response("City created successfully.", 200);
             }
             catch (Exception ex)
             {
@@ -106,7 +103,8 @@ namespace Taskedin.Controllers
 
                 mapper.Map(updateCityDto, existingCity);
                 await _cityService.UpdateCityAsync(existingCity);
-                return new Response(null, "City updated successfully.", true, 204);
+
+                return new Response("City updated successfully.", 204);
             }
             catch (Exception ex)
             {

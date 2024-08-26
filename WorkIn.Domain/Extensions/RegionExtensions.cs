@@ -103,12 +103,15 @@ namespace WorkIn.Domain.Extensions
             if (string.IsNullOrEmpty(search))
                 return regions;
 
-            return regions.Where(c => c.ArName.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                    || c.EnName.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                    || c.CountryId.ToString().Contains(search)
-                                    || (c.CreationDate.HasValue && c.CreationDate.Value
-                                    .ToString("yyyy-MM-dd").Contains(search)));
+            return regions
+                .AsEnumerable() 
+                .Where(c => c.ArName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                         || c.EnName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                         || c.CountryId.ToString().Contains(search)
+                         || (c.CreationDate.HasValue && c.CreationDate.Value.ToString("yyyy-MM-dd").Contains(search)))
+                .AsQueryable();
         }
+
 
     }
 }

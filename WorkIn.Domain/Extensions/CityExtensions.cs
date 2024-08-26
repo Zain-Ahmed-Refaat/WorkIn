@@ -110,11 +110,13 @@ namespace WorkIn.Domain.Extensions
             if (string.IsNullOrEmpty(search))
                 return cities;
 
-            return cities.Where(c => c.ArName.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                    || c.EnName.Contains(search, StringComparison.OrdinalIgnoreCase)
-                                    || c.RegionId.ToString().Contains(search)
-                                    || (c.CreationDate.HasValue && c.CreationDate.Value
-                                    .ToString("yyyy-MM-dd").Contains(search)));
+            return cities
+                .AsEnumerable()
+                .Where(c => c.ArName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                         || c.EnName.Contains(search, StringComparison.OrdinalIgnoreCase)
+                         || c.RegionId.ToString().Contains(search)
+                         || (c.CreationDate.HasValue && c.CreationDate.Value.ToString("yyyy-MM-dd").Contains(search)))
+                .AsQueryable();
         }
 
     }

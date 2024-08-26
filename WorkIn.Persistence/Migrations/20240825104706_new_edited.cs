@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WorkIn.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class @new : Migration
+    public partial class new_edited : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

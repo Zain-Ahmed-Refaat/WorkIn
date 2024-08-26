@@ -1,4 +1,5 @@
-﻿using WorkIn.Domain.Entities;
+﻿using static WorkIn.Infrastructure.Dtos.Country.CountryDtos;
+
 
 namespace WorkIn.Infrastructure.Dtos.Region
 {
@@ -10,7 +11,7 @@ namespace WorkIn.Infrastructure.Dtos.Region
             public string ArName { get; set; }
             public string EnName { get; set; }
             public int CountryId { get; set; }
-            public Country Country { get; set; }
+            public CountryDto Country { get; set; }
         }
 
         public class CreateRegionDto
@@ -19,9 +20,12 @@ namespace WorkIn.Infrastructure.Dtos.Region
             public string EnName { get; set; }
             public int CountryId { get; set; }
         }
-        public class UpdateRegionDto : CreateRegionDto
-        {
+        public class UpdateRegionDto
+        { 
             public int Id { get; set; }
+            public string ArName { get; set; }
+            public string EnName { get; set; }
+            public int CountryId { get; set; }
         }
 
     }

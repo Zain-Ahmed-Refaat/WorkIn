@@ -7,6 +7,7 @@ using WorkIn.Domain.Sorts;
 using WorkIn.Persistence.Data;
 using WorkIn.Persistence.MainRepository;
 using WorkIn.Service.Contract;
+using Microsoft.EntityFrameworkCore;
 
 namespace WorkIn.Service.Implementation
 {
@@ -26,7 +27,18 @@ namespace WorkIn.Service.Implementation
             if (workInfoId <= 0)
                 throw new ArgumentException("Invalid WorkInfo ID", nameof(workInfoId));
 
-            var workInfo = await workInfoRepository.GetAsync(workInfoId);
+            var workInfo = await workInfoRepository
+                .GetIncludingAsync(workInfoId,
+                [
+                 e => e.Employee,
+                 e => e.Manager,
+                 e => e.City,
+                 e => e.City.Region,
+                 e => e.City.Region.Country,
+                 e => e.Department,
+                 e => e.JobTitle
+                ]);
+             
             if (workInfo == null)
                 throw new KeyNotFoundException($"WorkInfo with ID {workInfoId} not found.");
 
@@ -37,7 +49,13 @@ namespace WorkIn.Service.Implementation
         {
             ValidateFilter(filter, sort);
 
-            var query = context.WorkInfos.AsQueryable();
+            var query = context.WorkInfos
+                .Include(w => w.Employee)
+                .Include(w => w.Manager)
+                .Include(w => w.JobTitle)
+                .Include(w => w.Department)
+                .Include(w => w.City)
+                .AsQueryable();
             query = query.Filter(filter);
             query = query.Sort(sort);
             query = query.Search(filter.search);
@@ -68,15 +86,38 @@ namespace WorkIn.Service.Implementation
 
         public async Task AddWorkInfoAsync(WorkInfo workInfo)
         {
-            workInfo.ValidateWorkInfo();
+            if (workInfo == null)
+                throw new ArgumentNullException(nameof(workInfo));
+
+            ValidateWorkInfoAsync(workInfo);
 
             await workInfoRepository.InsertAsync(workInfo);
             await context.SaveChangesAsync();
         }
 
+        public async Task ValidateWorkInfoAsync(WorkInfo workInfo)
+        {
+            bool isManager = workInfo.EmployeeId == null;
+
+            if (isManager)
+                if (workInfo.ManagerId.HasValue)               
+                  throw new ArgumentException("As a manager, you should not provide an Manager ID.");
+            
+            else
+            {
+                if (!workInfo.EmployeeId.HasValue)                
+                    throw new ArgumentException("As an employee, you must provide an Employee ID.");
+                
+                if (!workInfo.ManagerId.HasValue)              
+                    throw new ArgumentException("As an employee, you must provide a Manager ID.");
+            }
+
+        }
+
         public async Task UpdateWorkInfoAsync(WorkInfo workInfo)
         {
-            workInfo.ValidateWorkInfoWithId();
+            if (workInfo == null)
+                throw new ArgumentNullException(nameof(workInfo));
 
             await workInfoRepository.UpdateAsync(workInfo);
             await context.SaveChangesAsync();

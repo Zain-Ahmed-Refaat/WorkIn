@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using WorkIn.Domain.Entities;
 using WorkIn.Infrastructure.Mapping.MapCity;
+using WorkIn.Infrastructure.Mapping.MapCountry;
+using WorkIn.Infrastructure.Mapping.MapDepartment;
+using WorkIn.Infrastructure.Mapping.MapJobTitle;
+using WorkIn.Infrastructure.Mapping.MapProfile;
 using WorkIn.Infrastructure.Mapping.MapRegion;
 using WorkIn.Infrastructure.Mapping.MapWorkInfo;
 using WorkIn.Persistence.Data;
@@ -41,6 +45,10 @@ builder.Services.AddTransient<IProfileService, ProfileService>();
 builder.Services.AddAutoMapper(typeof(CityProfile).Assembly);
 builder.Services.AddAutoMapper(typeof(RegionProfile).Assembly);
 builder.Services.AddAutoMapper(typeof(WorkInfoProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(CountryProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(DepartmentProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(JobTitleProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(ProfileProfile).Assembly);
 
 
 builder.Services.AddControllers();

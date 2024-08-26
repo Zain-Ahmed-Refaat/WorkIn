@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using WorkIn.Service.Contract;
+
 
 namespace WorkIn.Controllers
 {
@@ -10,12 +10,10 @@ namespace WorkIn.Controllers
     {
 
         protected readonly IMapper mapper;
-        private IProfileService profileService;
 
-        public BaseController(IMapper mapper, IProfileService profileService)
+        public BaseController(IMapper mapper)
         {
             this.mapper = mapper;
-            this.profileService = profileService;
         }
 
     }

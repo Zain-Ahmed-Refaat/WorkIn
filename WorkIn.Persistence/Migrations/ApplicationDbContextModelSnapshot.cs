@@ -163,7 +163,7 @@ namespace WorkIn.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CountryId")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreationDate")
@@ -202,7 +202,7 @@ namespace WorkIn.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
+                    b.HasIndex("CityId");
 
                     b.HasIndex("DepartmentId");
 
@@ -257,13 +257,7 @@ namespace WorkIn.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("Bonus")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("CityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CountryId")
+                    b.Property<int?>("CityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreationDate")
@@ -272,52 +266,30 @@ namespace WorkIn.Persistence.Migrations
                     b.Property<DateTime?>("DeletionDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DepartmentId")
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EmployeeId")
+                    b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<bool?>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("JobTitleId")
+                    b.Property<int?>("JobTitleId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("LastModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("LastPromotionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ManagerId")
+                    b.Property<int?>("ManagerId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<int>("RegionId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Salary")
+                    b.Property<decimal?>("Salary")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Skills")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WorkEmail")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CityId");
-
-                    b.HasIndex("CountryId");
 
                     b.HasIndex("DepartmentId");
 
@@ -326,8 +298,6 @@ namespace WorkIn.Persistence.Migrations
                     b.HasIndex("JobTitleId");
 
                     b.HasIndex("ManagerId");
-
-                    b.HasIndex("RegionId");
 
                     b.ToTable("WorkInfos");
                 });
@@ -345,9 +315,9 @@ namespace WorkIn.Persistence.Migrations
 
             modelBuilder.Entity("WorkIn.Domain.Entities.Profile", b =>
                 {
-                    b.HasOne("WorkIn.Domain.Entities.Country", "Country")
+                    b.HasOne("WorkIn.Domain.Entities.City", "City")
                         .WithMany()
-                        .HasForeignKey("CountryId");
+                        .HasForeignKey("CityId");
 
                     b.HasOne("WorkIn.Domain.Entities.Department", "Department")
                         .WithMany()
@@ -357,7 +327,7 @@ namespace WorkIn.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("ManagerId");
 
-                    b.Navigation("Country");
+                    b.Navigation("City");
 
                     b.Navigation("Department");
 
@@ -379,49 +349,25 @@ namespace WorkIn.Persistence.Migrations
                 {
                     b.HasOne("WorkIn.Domain.Entities.City", "City")
                         .WithMany()
-                        .HasForeignKey("CityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WorkIn.Domain.Entities.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CityId");
 
                     b.HasOne("WorkIn.Domain.Entities.Department", "Department")
                         .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DepartmentId");
 
                     b.HasOne("WorkIn.Domain.Entities.Profile", "Employee")
                         .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId");
 
                     b.HasOne("WorkIn.Domain.Entities.JobTitle", "JobTitle")
                         .WithMany()
-                        .HasForeignKey("JobTitleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("JobTitleId");
 
                     b.HasOne("WorkIn.Domain.Entities.Profile", "Manager")
                         .WithMany()
-                        .HasForeignKey("ManagerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WorkIn.Domain.Entities.Region", "Region")
-                        .WithMany()
-                        .HasForeignKey("RegionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ManagerId");
 
                     b.Navigation("City");
-
-                    b.Navigation("Country");
 
                     b.Navigation("Department");
 
@@ -430,8 +376,6 @@ namespace WorkIn.Persistence.Migrations
                     b.Navigation("JobTitle");
 
                     b.Navigation("Manager");
-
-                    b.Navigation("Region");
                 });
 #pragma warning restore 612, 618
         }

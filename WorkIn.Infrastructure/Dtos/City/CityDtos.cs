@@ -1,10 +1,17 @@
-﻿namespace WorkIn.Infrastructure.Dtos.City
+﻿using static WorkIn.Infrastructure.Dtos.Region.RegionDtos;
+
+namespace WorkIn.Infrastructure.Dtos.City
 {
     public class CityDtos
     {
-        public class CityDto : UpdateCityDto
+        public class CityDto 
         {
-            public Domain.Entities.Region Region { get; set; }
+            public int Id { get; set; }
+            public string ArName { get; set; }
+            public string EnName { get; set; }
+
+            public int RegionId { get; set; }
+            public RegionDto Region { get; set; }
         }
 
         public class CreateCityDto
@@ -15,9 +22,13 @@
             public int RegionId { get; set; }
         }
 
-        public class UpdateCityDto : CreateCityDto
-        {
+        public class UpdateCityDto
+        { 
             public int Id { get; set; }
+            public string ArName { get; set; }
+            public string EnName { get; set; }
+
+            public int RegionId { get; set; }
 
         }
 

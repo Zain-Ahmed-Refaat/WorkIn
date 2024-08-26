@@ -7,26 +7,30 @@ using WorkIn.Persistence.Data;
 using WorkIn.Domain.Extensions;
 using WorkIn.Domain.Filters.Department;
 using WorkIn.Domain.Sorts.Department;
+using Microsoft.EntityFrameworkCore;
 
 namespace WorkIn.Service.Implementation
 {
     public class DepartmentService : IDepartmentService
     {
         private readonly IRepository<Department> departmentRepository;
-        private readonly IRepository<Profile> profileRepository;
         private readonly ApplicationDbContext context;
 
-        public DepartmentService(ApplicationDbContext context, IRepository<Department> departmentRepository, IRepository<Profile> profileRepository)
+        public DepartmentService(ApplicationDbContext context, IRepository<Department> departmentRepository)
         {
             this.context = context;
             this.departmentRepository = departmentRepository;
-            this.profileRepository = profileRepository;
         }
 
 
         public async Task AddDepartmentAsync(Department department)
         {
             department.ValidateDepartment();
+
+            var existingDepartment = await context.Departments
+                .FirstOrDefaultAsync(x => x.Name == department.Name);
+            if (existingDepartment != null)
+                throw new ArgumentException($"Department with name {department.Name} Already Exists");
 
             await departmentRepository.InsertAsync(department);
             await context.SaveChangesAsync();

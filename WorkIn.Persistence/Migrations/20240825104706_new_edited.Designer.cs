@@ -12,8 +12,8 @@ using WorkIn.Persistence.Data;
 namespace WorkIn.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240821144726_new")]
-    partial class @new
+    [Migration("20240825104706_new_edited")]
+    partial class new_edited
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

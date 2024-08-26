@@ -19,6 +19,9 @@ namespace WorkIn.Infrastructure.Mapping.MapCity
                 .ForMember(dest => dest.Id, src => src.MapFrom(src => src.Id))
                 .ReverseMap();
 
+            CreateMap<PagedModel<City>, PagedModel<CityDto>>()
+            .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+
             CreateMap<PagedModel<CityDto>, CityDto>();
 
         }

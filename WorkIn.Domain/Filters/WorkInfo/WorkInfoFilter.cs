@@ -19,8 +19,8 @@ namespace WorkIn.Domain.Filters.WorkInfo
         public decimal? SalaryMax { get; set; }
         public DateTime? LastPromotionDateStart { get; set; }
         public DateTime? LastPromotionDateEnd { get; set; }
-        public string Skills { get; set; }
-        public string WorkEmail { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? Skills { get; set; }
+        public string? WorkEmail { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }

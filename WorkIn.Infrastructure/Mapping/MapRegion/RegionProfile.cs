@@ -9,7 +9,6 @@ namespace WorkIn.Infrastructure.Mapping.MapRegion
         public RegionProfile()
         {
             CreateMap<Region, RegionDto>()
-               .ForMember(dest => dest.Id, src => src.MapFrom(src => src.Id))
                .ReverseMap();
 
             CreateMap<CreateRegionDto, Region>()

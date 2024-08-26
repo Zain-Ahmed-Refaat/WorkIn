@@ -7,10 +7,10 @@ namespace WorkIn.Domain.Extensions
     public static class DataPagerExtension
     {
         public static PagedModel<TModel> Paginate<TModel>(
-            this IQueryable<TModel> query,
-            int page,
-            int limit)
-            where TModel : class
+    this IQueryable<TModel> query,
+    int page,
+    int limit)
+    where TModel : class
         {
 
             var paged = new PagedModel<TModel>();
@@ -32,11 +32,11 @@ namespace WorkIn.Domain.Extensions
                        .ToList();
 
             paged.TotalItems = totalItemsCountTask;
+
             paged.TotalPages = (int)Math.Ceiling(paged.TotalItems / (double)limit);
 
             return paged;
         }
-
 
         public static PagedModel<TModel> Paginate<TModel>(
           this List<TModel> query,
