@@ -9,12 +9,12 @@
 
     public enum CitySortEnum
     {
+        CityId,
+
+        RegionId,
+
         ArName,
 
         EnName,
-
-        CreationDateAsc,
-
-        RegionId
     }
 }

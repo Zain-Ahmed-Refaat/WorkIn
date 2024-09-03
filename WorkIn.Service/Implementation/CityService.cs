@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Metrics;
 using WorkIn.Domain.Common;
 using WorkIn.Domain.Entities;
 using WorkIn.Domain.Extensions;
@@ -83,6 +82,11 @@ namespace WorkIn.Service.Implementation
         public async Task UpdateCityAsync(City city)
         {
             city.ValidateCityWithId();
+
+            var c = await context.Cities.FindAsync(city.RegionId);
+
+            if (c == null)
+                throw new Exception("Region Id NotFound");
 
             await cityRepository.UpdateAsync(city);
             await context.SaveChangesAsync();

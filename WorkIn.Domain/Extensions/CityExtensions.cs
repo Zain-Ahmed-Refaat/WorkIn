@@ -70,8 +70,15 @@ namespace WorkIn.Domain.Extensions
         {
             IOrderedQueryable<City> orderedCities;
 
+
             switch (sort.orderKey)
             {
+                case CitySortEnum.CityId:
+                    orderedCities = sort.orderDirection == SortEnum.OrderBy
+                        ? cities.OrderBy(c => c.Id)
+                        : cities.OrderByDescending(c => c.Id);
+                    break;
+
                 case CitySortEnum.ArName:
                     orderedCities = sort.orderDirection == SortEnum.OrderBy
                         ? cities.OrderBy(c => c.ArName)
@@ -84,12 +91,6 @@ namespace WorkIn.Domain.Extensions
                         : cities.OrderByDescending(c => c.EnName);
                     break;
 
-                case CitySortEnum.CreationDateAsc:
-                    orderedCities = sort.orderDirection == SortEnum.OrderBy
-                        ? cities.OrderBy(c => c.CreationDate)
-                        : cities.OrderByDescending(c => c.CreationDate);
-                    break;
-
                 case CitySortEnum.RegionId:
                     orderedCities = sort.orderDirection == SortEnum.OrderBy
                         ? cities.OrderBy(c => c.RegionId)
@@ -97,7 +98,7 @@ namespace WorkIn.Domain.Extensions
                     break;
 
                 default:
-                    orderedCities = cities.OrderByDescending(c => c.Id);
+                    orderedCities = cities.OrderBy(c => c.Id);
                     break;
             }
 

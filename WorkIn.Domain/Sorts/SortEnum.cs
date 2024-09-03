@@ -2,6 +2,7 @@
 {
     public enum SortEnum
     {
-        OrderByDescending, OrderBy
+        OrderBy,
+        OrderByDescending
     }
 }

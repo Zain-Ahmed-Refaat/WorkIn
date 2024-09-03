@@ -58,16 +58,10 @@ namespace WorkIn.Domain.Extensions
 
             switch (sort.orderKey)
             {
-                case DepartmentSortEnum.Name:
+                case DepartmentSortEnum.DepartmentId:
                     orderedDepartments = sort.orderDirection == SortEnum.OrderBy
-                        ? departments.OrderBy(d => d.Name)
-                        : departments.OrderByDescending(d => d.Name);
-                    break;
-
-                case DepartmentSortEnum.CreationDateAsc:
-                    orderedDepartments = sort.orderDirection == SortEnum.OrderBy
-                        ? departments.OrderBy(d => d.CreationDate)
-                        : departments.OrderByDescending(d => d.CreationDate);
+                        ? departments.OrderBy(d => d.Id)
+                        : departments.OrderByDescending(d => d.Id);
                     break;
 
                 case DepartmentSortEnum.ManagerId:
@@ -76,8 +70,14 @@ namespace WorkIn.Domain.Extensions
                         : departments.OrderByDescending(d => d.ManagerId);
                     break;
 
+                case DepartmentSortEnum.Name:
+                    orderedDepartments = sort.orderDirection == SortEnum.OrderBy
+                        ? departments.OrderBy(d => d.Name)
+                        : departments.OrderByDescending(d => d.Name);
+                    break;
+
                 default:
-                    orderedDepartments = departments.OrderByDescending(d => d.Id);
+                    orderedDepartments = departments.OrderBy(d => d.Id);
                     break;
             }
 

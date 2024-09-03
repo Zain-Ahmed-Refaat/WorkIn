@@ -8,9 +8,9 @@
 
     public enum DepartmentSortEnum
     {
-        Name,
-        CreationDateAsc,
-        ManagerId
+        DepartmentId,
+        ManagerId,
+        Name
     }
 
 }
